@@ -31,8 +31,6 @@
 #include "hwc2.h"
 #include "dispatcher.h"
 #include "sync.h"
-#ifdef USE_SWWATCHDOG
-#include "ui_ext/SWWatchDog.h"
 
 #define WDT_IOCTL(fd, CMD, ...)                                                             \
 ({                                                                                          \
@@ -40,23 +38,6 @@
     if (Platform::getInstance().m_config.wdt_ioctl)                                         \
     {                                                                                       \
         ATRACE_NAME(#CMD);                                                                  \
-        SWWatchDog::AutoWDT _wdt(String8::format("[DEV] ioctl(" #CMD "):%d", __LINE__), 500);   \
-        err = ioctl(fd, CMD, ##__VA_ARGS__);                                                \
-    }                                                                                       \
-    else                                                                                    \
-    {                                                                                       \
-        SWWatchDog::AutoWDT _wdt(String8::format("[DEV] ioctl(" #CMD "):%d", __LINE__), 500);   \
-        err = ioctl(fd, CMD, ##__VA_ARGS__);                                                \
-    }                                                                                       \
-    err;                                                                                    \
-})
-#else // USE_SWWATCHDOG
-#define WDT_IOCTL(fd, CMD, ...)                                                             \
-({                                                                                          \
-    int err = 0;                                                                            \
-    if (Platform::getInstance().m_config.wdt_ioctl)                                         \
-    {                                                                                       \
-        ATRACE_NAME(#CMD);                                                                  \
         err = ioctl(fd, CMD, ##__VA_ARGS__);                                                \
     }                                                                                       \
     else                                                                                    \
@@ -65,7 +46,6 @@
     }                                                                                       \
     err;                                                                                    \
 })
-#endif // USE_SWWATCHDOG
 
 #define HWC_ATRACE_BUFFER_INFO(string, n1, n2, n3, n4)                       \
     if (ATRACE_ENABLED()) {                                                   \
@@ -1410,9 +1390,6 @@ void DispDevice::setPowerMode(int dpy,int mode)
     if (HWCMediator::getInstance().m_features.control_fb)
     {
         HWC_LOGD("DispDevice::setPowerMode() dpy:%d mode:%d", dpy, mode);
-#ifdef USE_SWWATCHDOG
-        AUTO_WDT(1000);
-#endif
         char filename[32] = {0};
         snprintf(filename, sizeof(filename), "/dev/graphics/fb%d", dpy);
         int fb_fd = open(filename, O_RDWR);
@@ -1428,18 +1405,10 @@ void DispDevice::setPowerMode(int dpy,int mode)
             case HWC_POWER_MODE_OFF:
             {
                 err = WDT_IOCTL(fb_fd, FBIOBLANK, FB_BLANK_POWERDOWN);
-#ifdef USE_SWWATCHDOG
-                if (dpy == HWC_DISPLAY_PRIMARY)
-                    SWWatchDog::suspend();
-#endif
                 break;
             }
             case HWC_POWER_MODE_NORMAL:
             {
-#ifdef USE_SWWATCHDOG
-                if (dpy == HWC_DISPLAY_PRIMARY)
-                    SWWatchDog::resume();
-#endif
                 err = WDT_IOCTL(fb_fd, FBIOBLANK, FB_BLANK_UNBLANK);
                 m_color_transform_info[dpy].resend_color_transform = true;
                 break;

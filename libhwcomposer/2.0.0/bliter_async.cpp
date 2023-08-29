@@ -37,36 +37,10 @@
 #define BLOGW(i, x, ...) HWC_LOGW("(%d:%d) " x, m_disp_id, i, ##__VA_ARGS__)
 #define BLOGE(i, x, ...) HWC_LOGE("(%d:%d) " x, m_disp_id, i, ##__VA_ARGS__)
 
-#ifdef USE_SWWATCHDOG
-#include "ui_ext/SWWatchDog.h"
 #define WDT_BL_NODE(fn, ...)                                                                    \
 ({                                                                                              \
-    if (Platform::getInstance().m_config.wdt_ioctl)                                             \
-    {                                                                                           \
-        ATRACE_NAME(#fn);                                                                       \
-        SWWatchDog::AutoWDT _wdt(String8::format("[BLT_ASYNC] BliterNode." #fn "():%d", __LINE__), 500); \
-        m_bliter_node->fn(__VA_ARGS__);                                                         \
-    }                                                                                           \
-    else                                                                                        \
-    {                                                                                           \
-        SWWatchDog::AutoWDT _wdt(String8::format("[BLT_ASYNC] BliterNode." #fn "():%d", __LINE__), 500); \
-        m_bliter_node->fn(__VA_ARGS__);                                                         \
-    }                                                                                           \
+	m_bliter_node->fn(__VA_ARGS__); 	                                                        \
 })
-#else // USE_SWWATCHDOG
-#define WDT_BL_NODE(fn, ...)                                                                    \
-({                                                                                              \
-    if (Platform::getInstance().m_config.wdt_ioctl)                                             \
-    {                                                                                           \
-        ATRACE_NAME(#fn);                                                                       \
-        m_bliter_node->fn(__VA_ARGS__);                                                         \
-    }                                                                                           \
-    else                                                                                        \
-    {                                                                                           \
-        m_bliter_node->fn(__VA_ARGS__);                                                         \
-    }                                                                                           \
-})
-#endif // USE_SWWATCHDOG
 
 extern DP_PROFILE_ENUM mapDpColorRange(const uint32_t range);
 extern unsigned int mapDpOrientation(const uint32_t transform);

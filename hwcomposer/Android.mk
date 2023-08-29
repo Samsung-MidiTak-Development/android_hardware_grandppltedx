@@ -159,10 +159,6 @@ endif # MTK_SEC_VIDEO_PATH_SUPPORT
 ifneq ($(filter 1.4.0 1.4.0 1.4.0.sp 1.4.1 1.5.0 2.0.0,$(MTK_HWC_VERSION)),)
 LOCAL_SHARED_LIBRARIES += \
 	libged
-ifneq ($(MTK_BASIC_PACKAGE), yes)
-LOCAL_SHARED_LIBRARIES += \
-	libui_ext
-endif
 endif
 
 # HAL module implemenation stored in

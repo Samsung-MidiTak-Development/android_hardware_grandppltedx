@@ -14,27 +14,7 @@
 #include "sync.h"
 #include "hwc2.h"
 
-#ifdef USE_SWWATCHDOG
-#include "ui_ext/SWWatchDog.h"
-#if !defined MTK_USER_BUILD || defined USE_WDT_IOCTL
-#define WDT_BL_STREAM(fn, ...)                                                                  \
-({                                                                                              \
-    SWWatchDog::AutoWDT _wdt(String8::format("[NOD] DpAsyncBlitStream." #fn "():%d", __LINE__), 500); \
-    m_blit_stream->fn(__VA_ARGS__);                                                             \
-})
-#else
 #define WDT_BL_STREAM(fn, ...) m_blit_stream->fn(__VA_ARGS__)
-#endif
-#else // USE_SWWATCHDOG
-#if !defined MTK_USER_BUILD || defined USE_WDT_IOCTL
-#define WDT_BL_STREAM(fn, ...)                                                                  \
-({                                                                                              \
-    m_blit_stream->fn(__VA_ARGS__);                                                             \
-})
-#else
-#define WDT_BL_STREAM(fn, ...) m_blit_stream->fn(__VA_ARGS__)
-#endif
-#endif // USE_SWWATCHDOG
 
 #define UI_PQ_VIDEO_ID 0xFFFFFF00
 
