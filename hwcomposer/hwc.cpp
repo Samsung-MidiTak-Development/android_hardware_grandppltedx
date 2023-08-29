@@ -18,10 +18,6 @@ void HWCMediator::initFeatures()
     m_features.virtuals = 1;
 #endif
 
-#ifdef MTK_ENHAHCE_SUPPORT
-    m_features.enhance = 1;
-#endif
-
 #ifdef MTK_FORCE_HWC_COPY_VDS
     m_features.copyvds = 1;
 #endif
@@ -33,26 +29,8 @@ void HWCMediator::initFeatures()
 #ifdef MTK_LCM_PHYSICAL_ROTATION_HW
     m_features.phy_rotation_180 = 1;
 #endif
-
-#ifdef MTK_ROTATION_OFFSET_SUPPORT
-    m_features.rotation_offset = 1;
-#endif
-
-#ifdef MTK_GMO_RAM_OPTIMIZE
     m_features.gmo = 1;
-#endif
-
-#ifdef MTK_CONTROL_POWER_WITH_FRAMEBUFFER_DEVICE
     m_features.control_fb = 1;
-#endif
-
-#ifdef MTK_OD_SUPPORT
-    m_features.od = 1;
-#endif
-
-#ifdef MTK_DISPLAY_120HZ_SUPPORT
-    m_features.fps120 = 1;
-#endif
     m_features.fbt_bound = 0;
     m_features.hdmi_s3d = 1;
     m_features.hdmi_s3d_debug = 0;
@@ -61,18 +39,7 @@ void HWCMediator::initFeatures()
 #ifdef MTK_WITHOUT_PRIMARY_PRESENT_FENCE
     m_features.without_primary_present_fence = 1;
 #endif
-
-    m_features.dual_display = MTK_DUAL_DISPLAY;
-    m_features.epaper_vendor = MTK_EPAPER_VENDOR;
     m_features.legacy_mirror_rule = 1;
-
-#ifdef MTK_GLOBAL_PQ_SUPPORT
-    m_features.global_pq = 1;
-#endif
-
-#ifdef MTK_AOD_SUPPORT
-    m_features.aod = 1;
-#endif
 
 #ifdef MTK_MERGE_MDP_DISPLAY
     m_features.merge_mdp_display = 1;

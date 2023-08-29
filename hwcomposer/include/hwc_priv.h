@@ -82,7 +82,6 @@ struct HwcPrepareData
 typedef struct hwc_feature {
     int externals;
     int virtuals;
-    int enhance;
 #if defined(MTK_HWC_VER_1_2)
     int stereoscopic;
 #else
@@ -91,24 +90,16 @@ typedef struct hwc_feature {
     int phy_rotation_180;
     int cache_caps;
     int cache_mode;
-    int rotation_offset;
     int gmo;
     int control_fb;
     int trigger_by_vsync;
     int fbt_bound;
 #endif
-    int od;
-    int fps120;
     int hdmi_s3d;
     int hdmi_s3d_debug;
     int hdmi_s3d_depth;
     int without_primary_present_fence;
-    int dual_display;
-    char *epaper_vendor;
     int legacy_mirror_rule;
-    int global_pq;
-    int aod;
-    int resolution_switch;
     int merge_mdp_display;
 } hwc_feature_t;
 
