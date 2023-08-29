@@ -39,13 +39,6 @@
 // #include "cache.h"
 #include <linux/disp_session.h>
 
-#ifdef USES_PQSERVICE
-#include <vendor/mediatek/hardware/pq/2.0/IPictureQuality.h>
-using android::hardware::hidl_array;
-using vendor::mediatek::hardware::pq::V2_0::IPictureQuality;
-using vendor::mediatek::hardware::pq::V2_0::Result;
-#endif
-
 int32_t checkMirrorPath(const vector<sp<HWCDisplay> >& displays, bool *ultra_scenario);
 
 const char* HWC2_PRESENT_VALI_STATE_PRESENT_DONE_STR = "PD";
@@ -766,11 +759,7 @@ void HWCDisplay::initPrevCompTypes()
         m_prev_comp_types[i] = layers[i]->getCompositionType();
 }
 
-#ifdef USES_PQSERVICE
 int32_t HWCDisplay::setColorTransform(const float* matrix, const int32_t& hint)
-#else
-int32_t HWCDisplay::setColorTransform(const float* matrix, const int32_t& hint)
-#endif
 {
     m_color_transform_hint = hint;
     m_color_transform = new ColorTransform(matrix, hint, true);
@@ -784,39 +773,7 @@ int32_t HWCDisplay::setColorTransform(const float* matrix, const int32_t& hint)
     }
     else
     {
-#ifdef USES_PQSERVICE
-        if (getId() == HWC_DISPLAY_PRIMARY)
-        {
-            sp<IPictureQuality> pq_service = IPictureQuality::tryGetService();
-            if (pq_service == nullptr)
-            {
-                HWC_LOGE("cannot find PQ service!");
-                m_color_transform_ok = false;
-            }
-            else
-            {
-                const int32_t dimension = 4;
-                hidl_array<float, 4, 4> send_matrix;
-                for (int32_t i = 0; i < dimension; ++i)
-                {
-                    DbgLogger logger(DbgLogger::TYPE_HWC_LOG, 'D', "matrix ");
-                    for (int32_t j = 0; j < dimension; ++j)
-                    {
-                        send_matrix[i][j] = matrix[i * dimension + j];
-                        logger.printf("%f,", send_matrix[i][j]);
-                    }
-                }
-                m_color_transform_ok = (pq_service->setColorTransform(send_matrix, hint, 1) == Result::OK);
-                HWC_LOGI("(%" PRIu64 " %s ) hint:%d ok:%d", getId(), __func__, hint, m_color_transform_ok);
-            }
-        }
-        else
-        {
-            m_color_transform_ok = false;
-        }
-#else
         m_color_transform_ok = (hint == HAL_COLOR_TRANSFORM_IDENTITY);
-#endif
     }
     return m_color_transform_ok ? HWC2_ERROR_NONE : HWC2_ERROR_UNSUPPORTED;
 }
@@ -1509,50 +1466,6 @@ void HWCDisplay::afterPresent()
     }
 
     m_color_transform = nullptr;
-
-#ifdef USES_PQSERVICE
-    // check if need to refresh display
-    if (HWCMediator::getInstance().m_features.global_pq &&
-        getId() == HWC_DISPLAY_PRIMARY &&
-        !DisplayManager::getInstance().m_data[HWC_DISPLAY_EXTERNAL].connected &&
-        !DisplayManager::getInstance().m_data[HWC_DISPLAY_VIRTUAL].connected)
-    {
-        sp<IPictureQuality> pq_service = IPictureQuality::getService();
-        if (pq_service == nullptr)
-        {
-            HWC_LOGE("cannot find PQ service for pq update!");
-        }
-        else
-        {
-            bool need_refresh = false;
-            // UIPQ dc effect is gradient by frame, it may need refresh display
-            // because dc status has not reach stable yet. Consider uipq layer
-            // is composed by device or client, we check dc status after display
-            // present. 0: unstable; 1: stable
-            pq_service->getGlobalPQStableStatus(
-                [&] (Result retval, int32_t stable_status)
-                {
-                    if (retval == Result::OK)
-                    {
-                        need_refresh = (0 == stable_status) ? true : false;
-                    }
-                    else
-                    {
-                        HWC_LOGE("getGlobalPQStableStatus failed!");
-                    }
-                });
-            if (need_refresh)
-            {
-                // clear stable flag to avoid always refresh if bypass MDP by accident.
-                if (pq_service->setGlobalPQStableStatus(1) != Result::OK)
-                {
-                    HWC_LOGE("setGlobalPQStableStatus failed!");
-                }
-                DisplayManager::getInstance().refresh(HWC_DISPLAY_PRIMARY);
-            }
-        }
-    }
-#endif
 }
 
 void HWCDisplay::clear()

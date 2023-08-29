@@ -165,25 +165,6 @@ LOCAL_SHARED_LIBRARIES += \
 endif
 endif
 
-ifneq ($(findstring 7.,$(PLATFORM_VERSION)),)
-ifneq ($(MTK_BASIC_PACKAGE), yes)
-	LOCAL_SHARED_LIBRARIES += \
-		libperfservicenative
-endif
-else
-ifneq ($(MTK_BASIC_PACKAGE), yes)
-	LOCAL_SHARED_LIBRARIES += \
-		libhidlbase \
-		libhwbinder \
-		libhidltransport \
-		libpq_prot \
-		vendor.mediatek.hardware.pq@2.0 \
-		android.hardware.power@1.0 \
-		vendor.mediatek.hardware.power@2.0
-endif
-	LOCAL_CFLAGS += -DBYPASS_WLV1_CHECKING
-endif
-
 # HAL module implemenation stored in
 # hw/<OVERLAY_HARDWARE_MODULE_ID>.<ro.product.board>.so
 LOCAL_MODULE := hwcomposer.$(MTK_PLATFORM_DIR)

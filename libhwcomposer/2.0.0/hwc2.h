@@ -7,11 +7,6 @@
 #include <utils/Singleton.h>
 #include <utils/RefBase.h>
 
-#ifdef USES_PQSERVICE
-#include <vendor/mediatek/hardware/pq/2.0/IPictureQuality.h>
-using vendor::mediatek::hardware::pq::V2_0::IPictureQuality;
-#endif
-
 #include "color.h"
 #include "hwc2_api.h"
 #include "display.h"

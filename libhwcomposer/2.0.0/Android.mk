@@ -90,30 +90,6 @@ ifneq ($(MTK_BASIC_PACKAGE), yes)
 	LOCAL_CFLAGS += -DUSE_SWWATCHDOG
 endif
 
-ifneq ($(findstring 7.,$(PLATFORM_VERSION)),)
-	LOCAL_C_INCLUDES += \
-		$(TOP)/$(MTK_ROOT)/frameworks/av/drm/widevine/libwvdrmengine/hdcpinfo/include \
-		$(TOP)/$(MTK_ROOT)/hardware/perfservice/perfservicenative
-else
-
-ifneq ($(MTK_BASIC_PACKAGE), yes)
-	LOCAL_C_INCLUDES += \
-		$(TOP)/$(MTK_ROOT)/hardware/pq/v2.0/include \
-
-	LOCAL_SHARED_LIBRARIES += \
-		vendor.mediatek.hardware.pq@2.0 \
-		android.hardware.power@1.0 \
-		vendor.mediatek.hardware.power@2.0
-
-	LOCAL_CFLAGS += -DUSES_PQSERVICE -DUSES_POWERHAL
-endif
-
-	gralloc0_platform := mt6570 mt6580
-
-ifneq ($(MTK_PLATFORM_DIR), $(filter $(MTK_PLATFORM_DIR), $(gralloc0_platform)))
-	LOCAL_CFLAGS += -DUSES_GRALLOC1
-endif
-
 endif
 
 #LOCAL_CFLAGS += -DMTK_HWC_PROFILING
