@@ -88,17 +88,16 @@ endif
 
 
 LOCAL_C_INCLUDES += \
-	$(TOP)/$(MTK_ROOT)/hardware/hwcomposer/include \
-	#$(TOP)/$(MTK_ROOT)/hardware/include
+	$(LOCAL_PATH)/include
 
 LOCAL_STATIC_LIBRARIES += \
-	hwcomposer.$(MTK_PLATFORM_DIR).$(MTK_HWC_VERSION)
+	hwcomposer.$(TARGET_BOARD_PLATFORM).2.0.0
 
 LOCAL_SHARED_LIBRARIES := \
 	libui \
 	libutils \
 	libcutils \
-        liblog \
+	liblog \
 	libsync \
 	libion \
 	libbwc \
@@ -135,13 +134,13 @@ endif
 
 # HAL module implemenation stored in
 # hw/<OVERLAY_HARDWARE_MODULE_ID>.<ro.product.board>.so
-LOCAL_MODULE := hwcomposer.$(MTK_PLATFORM_DIR)
+LOCAL_MODULE := hwcomposer.$(TARGET_BOARD_PLATFORM)
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_OWNER := mtk
 
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_MULTILIB := first
-include $(MTK_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 endif # MTK_HWC_SUPPORT

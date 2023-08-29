@@ -4,7 +4,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := hwcomposer.$(MTK_PLATFORM_DIR).2.0.0
+LOCAL_MODULE := hwcomposer.$(TARGET_BOARD_PLATFORM).2.0.0
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_OWNER := mtk
 
@@ -13,17 +13,15 @@ LOCAL_MODULE_CLASS := STATIC_LIBRARIES
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_C_INCLUDES += \
 	frameworks/native/services/surfaceflinger \
-	$(TOP)/$(MTK_ROOT)/hardware/hwcomposer \
-	$(TOP)/$(MTK_ROOT)/hardware/hwcomposer/include \
-	$(TOP)/$(MTK_ROOT)/hardware/gralloc_extra/include \
-	$(TOP)/$(MTK_ROOT)/hardware/dpframework/include \
-	$(TOP)/$(MTK_ROOT)/hardware/gpu_ext/ged/include \
-	$(TOP)/$(MTK_ROOT)/hardware/libgem/inc \
-	$(TOP)/$(MTK_ROOT)/hardware/bwc/inc \
-	$(TOP)/$(MTK_ROOT)/hardware/m4u/$(MTK_PLATFORM_DIR) \
-	$(LOCAL_PATH)/../$(MTK_PLATFORM_DIR) \
-	$(LOCAL_PATH)/.. \
-	$(TOP)/$(MTK_ROOT)/external/libion_mtk/include \
+	$(TOP)/$(HWC_PATH)/hwcomposer \
+	$(TOP)/$(HWC_PATH)/hwcomposer/include \
+	$(TOP)/$(HWC_PATH)/gralloc_extra/include \
+	$(TOP)/$(HWC_PATH)/dpframework/include \
+	$(TOP)/$(HWC_PATH)/gpu_ext/ged/include \
+	$(TOP)/$(HWC_PATH)/libgem/inc \
+	$(TOP)/$(HWC_PATH)/bwc/inc \
+	$(TOP)/$(HWC_PATH)/m4u/mt6735 \
+	$(TOP)/$(HWC_PATH)/libion_mtk/include \
 	$(TOP)/system/core/libion/include \
 	$(TOP)/system/core/libsync/include \
 	$(TOP)/system/core/libsync \
@@ -89,5 +87,5 @@ endif
 #LOCAL_CFLAGS += -DMTK_HWC_PROFILING
 
 
-include $(MTK_STATIC_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
